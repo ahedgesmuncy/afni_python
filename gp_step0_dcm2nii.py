@@ -30,10 +30,12 @@ def func_sbatch(command, wall_hours, mem_gig, num_proc, h_str, work_dir):
     full_name = f"{work_dir}/sbatch_writeOut_{h_str}"
     sbatch_job = f"""
         sbatch \
-        -J {h_str} -t {wall_hours}:00:00 --mem={mem_gig}000 --ntasks-per-node={num_proc} \
-        -p IB_44C_512G -o {full_name}.out -e {full_name}.err \
-        --account iacc_madlab --qos pq_madlab \
-        --wrap="module load afni-20.2.06 \n {command}"
+            -J {h_str} \
+            -t {wall_hours}:00:00 \
+            --mem={mem_gig}000 \
+            --ntasks-per-node={num_proc} \
+            -o {full_name}.out -e {full_name}.err \
+            --wrap="{command}"
     """
     sbatch_response = subprocess.Popen(sbatch_job, shell=True, stdout=subprocess.PIPE)
     job_id = sbatch_response.communicate()[0]

@@ -58,7 +58,6 @@ def func_copy_data(subj, sess, work_dir, data_dir, phase_list):
     # struct
     if not os.path.exists(os.path.join(work_dir, "struct+orig.HEAD")):
         h_cmd = f"""
-            module load afni-20.2.06
             3dcopy \
                 {data_dir}/anat/{subj}_{sess}_T1w.nii.gz \
                 {work_dir}/struct+orig
@@ -80,7 +79,6 @@ def func_copy_data(subj, sess, work_dir, data_dir, phase_list):
             run_count = 1 + h_count
             if not os.path.exists(f"{work_dir}/run-{run_count}_{phase}+orig.HEAD"):
                 h_cmd = f"""
-                    module load afni-20.2.06
                     3dcopy \
                         {data_dir}/func/{h_file} \
                         {work_dir}/run-{run_count}_{phase}+orig
@@ -99,7 +97,6 @@ def func_copy_data(subj, sess, work_dir, data_dir, phase_list):
         h_dir = fmap.split("-")[-1].split("_")[0]
         if not os.path.exists(f"{work_dir}/blip_{h_dir}+orig.HEAD"):
             h_cmd = f"""
-                module load afni-20.2.06
                 3dcopy \
                     {data_dir}/fmap/{fmap} \
                     {work_dir}/blip_{h_dir}
@@ -124,7 +121,6 @@ def func_outliers(work_dir, phase_list, subj_num, out_thresh):
 
                 # calc tr length
                 h_cmd = f"""
-                    module load afni-20.2.06
                     3dinfo -tr {work_dir}/{run}+orig
                 """
                 h_tr = subprocess.Popen(h_cmd, shell=True, stdout=subprocess.PIPE)
@@ -133,7 +129,6 @@ def func_outliers(work_dir, phase_list, subj_num, out_thresh):
 
                 # calc number of volumes
                 h_cmd = f"""
-                    module load afni-20.2.06
                     3dinfo -ntimes {work_dir}/{run}+orig
                 """
                 h_nvol = subprocess.Popen(h_cmd, shell=True, stdout=subprocess.PIPE)
@@ -145,7 +140,6 @@ def func_outliers(work_dir, phase_list, subj_num, out_thresh):
 
                 # determine percentage outliers for e/volume
                 h_cmd = f"""
-                    module load afni-20.2.06
                     cd {work_dir}
 
                     3dToutcount \
@@ -290,7 +284,6 @@ def func_vrbase(work_dir, phase_list, blip_tog):
         num_vols = []
         for scan in scan_list:
             h_cmd = f"""
-                module load afni-20.2.06
                 3dinfo -ntimes {work_dir}/{scan}
             """
             h_nvol = subprocess.Popen(h_cmd, shell=True, stdout=subprocess.PIPE)
@@ -301,7 +294,6 @@ def func_vrbase(work_dir, phase_list, blip_tog):
 
         # determine index of min
         h_cmd = f"""
-            module load afni-20.2.06
             3dTstat \
                 -argmin \
                 -prefix - \
@@ -314,7 +306,6 @@ def func_vrbase(work_dir, phase_list, blip_tog):
 
         # determine min volume
         h_cmd = f"""
-            module load afni-20.2.06
             1d_tool.py \
                 -set_run_lengths {" ".join(num_vols)} \
                 -index_to_run_tr {ind_min}
@@ -331,7 +322,6 @@ def func_vrbase(work_dir, phase_list, blip_tog):
 
         # make epi volreg base
         h_cmd = f"""
-            module load afni-20.2.06
             cd {work_dir}
             3dbucket \
                 -prefix epi_vrBase \
@@ -442,7 +432,6 @@ def func_volreg_warp(work_dir, phase_list, subj_num, blip_tog):
 
             # get grid size
             h_cmd = f"""
-                module load afni-20.2.06
                 3dinfo -di {work_dir}/{run}+orig
             """
             h_gs = subprocess.Popen(h_cmd, shell=True, stdout=subprocess.PIPE)
@@ -451,7 +440,6 @@ def func_volreg_warp(work_dir, phase_list, subj_num, blip_tog):
 
             # concatenate matrices
             h_cmd = f"""
-                module load afni-20.2.06
                 cd {work_dir}
 
                 cat_matvec \
@@ -485,7 +473,6 @@ def func_volreg_warp(work_dir, phase_list, subj_num, blip_tog):
         #   mask from warped EPI data
         if not os.path.exists(os.path.join(work_dir, f"tmp_{run}_min+tlrc.HEAD")):
             h_cmd = f"""
-                module load afni-20.2.06
                 cd {work_dir}
 
                 3dcalc \
@@ -540,6 +527,7 @@ def func_clean_volreg(work_dir, phase_list, subj_num):
             ):
                 h_cmd = f"""
                     cd {work_dir}
+
                     3dcalc \
                         -a {run}_warp+tlrc \
                         -b {phase}_minVal_mask+tlrc \
@@ -570,7 +558,6 @@ def func_blur(work_dir, subj_num, blur_mult):
 
             # calc voxel dim i
             h_cmd = f"""
-                module load afni-20.2.06
                 3dinfo -di {work_dir}/{run}+orig
             """
             h_gs = subprocess.Popen(h_cmd, shell=True, stdout=subprocess.PIPE)
@@ -581,6 +568,7 @@ def func_blur(work_dir, subj_num, blur_mult):
             # do blur
             h_cmd = f"""
                 cd {work_dir}
+
                 3dmerge \
                     -1blur_fwhm {blur_size} \
                     -doall \
@@ -619,7 +607,6 @@ def func_tiss_masks(work_dir, subj_num, atropos_dict, atropos_dir):
                 os.path.join(work_dir, f"tmp_mask.{run}_blur+tlrc.HEAD")
             ):
                 h_cmd = f"""
-                    module load afni-20.2.06
                     cd {work_dir}
                     3dAutomask -prefix tmp_mask.{run} {run}_blur+tlrc
                 """
@@ -666,7 +653,6 @@ def func_tiss_masks(work_dir, subj_num, atropos_dict, atropos_dir):
             os.path.join(work_dir, f"final_mask_{h_tiss}_eroded+tlrc.HEAD")
         ):
             h_cmd = f"""
-                module load c3d-1.0.0-gcc-8.2.0
                 cd {work_dir}
 
                 c3d \
@@ -723,7 +709,6 @@ def func_scale(work_dir, phase_list, subj_num):
 def func_argparser():
     parser = ArgumentParser("Receive Bash args from wrapper")
     parser.add_argument("h_sub", help="Subject ID")
-    parser.add_argument("h_ses", help="Session")
     parser.add_argument("h_par", help="Parent Directory")
     parser.add_argument("h_bt", help="Blip Toggle")
     parser.add_argument("h_phl", nargs="+", help="Phase List")
@@ -733,25 +718,22 @@ def func_argparser():
 # %%
 def main():
 
-    # """ For testing """
-    # subj = "sub-005"
-    # sess = "ses-S1"
-    # phase_list = ["loc", "Study"]
-    # blip_tog = 0
-
-    # par_dir = "/scratch/madlab/nate_vCAT"
-    # data_dir = os.path.join(par_dir, "dset", subj, sess)
-    # work_dir = os.path.join(par_dir, "derivatives", subj, sess)
+    """For testing"""
+    subj = "sub-1555"
+    phase_list = ["study", "test"]
+    blip_tog = 0
+    par_dir = "/fslhome/amhedges/compute/Context"
 
     """ Get passed arguments """
     args = func_argparser().parse_args()
     subj = args.h_sub
-    sess = args.h_ses
     par_dir = args.h_par
     phase_list = args.h_phl
     blip_tog = args.h_bt
 
     """ Make some vars """
+    sess = os.listdir(os.path.join(par_dir, "dset", subj))[0]
+
     data_dir = os.path.join(par_dir, "dset", subj, sess)
     work_dir = os.path.join(par_dir, "derivatives", subj, sess)
     subj_num = subj.split("-")[1]
@@ -781,7 +763,7 @@ def main():
         func_vrbase(work_dir, phase_list, blip_tog)
 
     """ Calculate normalization vectors """
-    atlas_dir = "/home/data/madlab/atlases/vold2_mni"
+    atlas_dir = "/fslhome/amhedges/Templates/vold2_mni"
     atlas = os.path.join(atlas_dir, "vold2_mni_brain+tlrc")
     check_diffeo = os.path.join(work_dir, "anat.un.aff.qw_WARP.nii")
     if not os.path.exists(check_diffeo):
