@@ -718,13 +718,13 @@ def func_argparser():
 # %%
 def main():
 
-    """For testing"""
-    subj = "sub-1555"
-    phase_list = ["study", "test"]
-    blip_tog = 0
-    par_dir = "/fslhome/amhedges/compute/Context"
+    # """For testing"""
+    # subj = "sub-1555"
+    # phase_list = ["study", "test"]
+    # blip_tog = 0
+    # par_dir = "/fslhome/amhedges/compute/Context"
 
-    """ Get passed arguments """
+    """Get passed arguments"""
     args = func_argparser().parse_args()
     subj = args.h_sub
     par_dir = args.h_par
