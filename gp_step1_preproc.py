@@ -19,7 +19,7 @@ import subprocess
 import fnmatch
 import math
 from argparse import ArgumentParser
-from gp_step0_dcm2nii import func_sbatch
+# from gp_step0_dcm2nii import func_sbatch
 
 
 # %%
@@ -188,7 +188,9 @@ def func_fmap_corr(work_dir, subj_num, phase_list):
                     -apply_prefix tmp_med_masked_{h_dir} \
                     tmp_med_{h_dir}+orig
             """
-            func_sbatch(h_cmd, 1, 1, 1, f"{subj_num}med", work_dir)
+            # func_sbatch(h_cmd, 1, 1, 1, f"{subj_num}med", work_dir)
+            h_med = subprocess.Popen(h_cmd, shell=True, stdout=subprocess.PIPE)
+            h_med.wait()
 
     # compute midpoint between fmaps
     if not os.path.exists(os.path.join(work_dir, "blip_warp_For_WARP+orig.HEAD")):
@@ -206,7 +208,9 @@ def func_fmap_corr(work_dir, subj_num, phase_list):
                 -base tmp_med_masked_AP+orig \
                 -prefix blip_warp
         """
-        func_sbatch(h_cmd, 1, 1, 1, f"{subj_num}qwa", work_dir)
+        # func_sbatch(h_cmd, 1, 1, 1, f"{subj_num}qwa", work_dir)
+        h_qwa = subprocess.Popen(h_cmd, shell=True, stdout=subprocess.PIPE)
+        h_qwa.wait()
 
     # unwarp run data (de-distort), apply header
     for phase in phase_list:
@@ -227,7 +231,9 @@ def func_fmap_corr(work_dir, subj_num, phase_list):
                         IJK_TO_DICOM_REAL \
                         {run}_blip+orig
                 """
-                func_sbatch(h_cmd, 1, 2, 4, f"{subj_num}nwar", work_dir)
+                # func_sbatch(h_cmd, 1, 2, 4, f"{subj_num}nwar", work_dir)
+                h_nwar = subprocess.Popen(h_cmd, shell=True, stdout=subprocess.PIPE)
+                h_nwar.wait()
 
 
 def func_vrbase(work_dir, phase_list, blip_tog):
@@ -371,7 +377,9 @@ def func_register(atlas, work_dir, subj_num):
             cp awpy/anat.un.aff.Xat.1D .
             cp awpy/anat.un.aff.qw_WARP.nii .
         """
-        func_sbatch(h_cmd, 1, 4, 4, f"{subj_num}dif", work_dir)
+        # func_sbatch(h_cmd, 1, 4, 4, f"{subj_num}dif", work_dir)
+        h_dif = subprocess.Popen(h_cmd, shell=True, stdout=subprocess.PIPE)
+        h_dif.wait()
 
 
 def func_volreg_warp(work_dir, phase_list, subj_num, blip_tog):
@@ -425,7 +433,9 @@ def func_volreg_warp(work_dir, phase_list, subj_num, blip_tog):
                     -1Dmatrix_save mat.{run}.vr.aff12.1D \
                     {h_run}
             """
-            func_sbatch(h_cmd, 1, 1, 1, f"{subj_num}vre", work_dir)
+            # func_sbatch(h_cmd, 1, 1, 1, f"{subj_num}vre", work_dir)
+            h_vre = subprocess.Popen(h_cmd, shell=True, stdout=subprocess.PIPE)
+            h_vre.wait()
 
         # set up, warp EPI to template
         if not os.path.exists(os.path.join(work_dir, f"{run}_warp+tlrc.HEAD")):
@@ -466,7 +476,9 @@ def func_volreg_warp(work_dir, phase_list, subj_num, blip_tog):
                     -nwarp '{" ".join(nwarp_list)}' \
                     -prefix {run}_warp
             """
-            func_sbatch(h_cmd, 2, 4, 4, f"{subj_num}war", work_dir)
+            # func_sbatch(h_cmd, 2, 4, 4, f"{subj_num}war", work_dir)
+            h_war = subprocess.Popen(h_cmd, shell=True, stdout=subprocess.PIPE)
+            h_war.wait()
 
         # Update - don't waste computation time warping
         #   simple mask into template space. Just make
@@ -518,7 +530,9 @@ def func_clean_volreg(work_dir, phase_list, subj_num):
                     -expr 'step(a-0.999)' \
                     -prefix {phase}_minVal_mask
             """
-            func_sbatch(h_cmd, 1, 1, 1, f"{subj_num}min", work_dir)
+            # func_sbatch(h_cmd, 1, 1, 1, f"{subj_num}min", work_dir)
+            h_min = subprocess.Popen(h_cmd, shell=True, stdout=subprocess.PIPE)
+            h_min.wait()
 
         # make clean data
         for run in epi_list:
@@ -534,7 +548,9 @@ def func_clean_volreg(work_dir, phase_list, subj_num):
                         -expr 'a*b' \
                         -prefix {run}_volreg_clean
                 """
-                func_sbatch(h_cmd, 1, 1, 1, f"{subj_num}cle", work_dir)
+                # func_sbatch(h_cmd, 1, 1, 1, f"{subj_num}cle", work_dir)
+                h_cle = subprocess.Popen(h_cmd, shell=True, stdout=subprocess.PIPE)
+                h_cle.wait()
 
 
 def func_blur(work_dir, subj_num, blur_mult):
@@ -575,7 +591,9 @@ def func_blur(work_dir, subj_num, blur_mult):
                     -prefix {run}_blur \
                     {run}_volreg_clean+tlrc
             """
-            func_sbatch(h_cmd, 1, 1, 1, f"{subj_num}blur", work_dir)
+            # func_sbatch(h_cmd, 1, 1, 1, f"{subj_num}blur", work_dir)
+            h_blur = subprocess.Popen(h_cmd, shell=True, stdout=subprocess.PIPE)
+            h_blur.wait()
 
 
 def func_tiss_masks(work_dir, subj_num, atropos_dict, atropos_dir):
@@ -641,7 +659,9 @@ def func_tiss_masks(work_dir, subj_num, atropos_dict, atropos_dir):
                 -no_automask tmp_mask_allRuns+tlrc tmp_mask_struct+tlrc | \
                 tee out.mask_ae_overlap.txt
         """
-        func_sbatch(h_cmd, 1, 1, 1, f"{subj_num}uni", work_dir)
+        # func_sbatch(h_cmd, 1, 1, 1, f"{subj_num}uni", work_dir)
+        h_uni = subprocess.Popen(h_cmd, shell=True, stdout=subprocess.PIPE)
+        h_uni.wait()
 
     # Make tissue-class masks
     #   I like Atropos better than AFNI's way, so use those priors
@@ -677,7 +697,9 @@ def func_tiss_masks(work_dir, subj_num, atropos_dict, atropos_dir):
                     -input tmp_mask_{h_tiss}_eroded+orig \
                     -prefix final_mask_{h_tiss}_eroded
             """
-            func_sbatch(h_cmd, 1, 1, 1, f"{subj_num}atr", work_dir)
+            # func_sbatch(h_cmd, 1, 1, 1, f"{subj_num}atr", work_dir)
+            h_atr = subprocess.Popen(h_cmd, shell=True, stdout=subprocess.PIPE)
+            h_atr.wait()
 
 
 def func_scale(work_dir, phase_list, subj_num):
@@ -703,7 +725,9 @@ def func_scale(work_dir, phase_list, subj_num):
                         -expr 'c * min(200, a/b*100)*step(a)*step(b)' \
                         -prefix {run}_scale
                 """
-                func_sbatch(h_cmd, 1, 1, 1, f"{subj_num}scale", work_dir)
+                # func_sbatch(h_cmd, 1, 1, 1, f"{subj_num}scale", work_dir)
+                h_scale = subprocess.Popen(h_cmd, shell=True, stdout=subprocess.PIPE)
+                h_scale.wait()
 
 
 def func_argparser():

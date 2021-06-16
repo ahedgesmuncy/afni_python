@@ -73,7 +73,7 @@ def main():
                 -J "GP1{subj.split("-")[1]}" \
                 -t 10:00:00 \
                 --mem=4000 \
-                --ntasks-per-node=1 \
+                --ntasks-per-node=6 \
                 -o {h_out} -e {h_err} \
                 --wrap="module load python/3.8 \n \
                 python {code_dir}/gp_step1_preproc.py \
