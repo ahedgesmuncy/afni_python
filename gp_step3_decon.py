@@ -25,7 +25,7 @@ import subprocess
 import re
 import json
 from argparse import ArgumentParser
-from gp_step0_dcm2nii import func_sbatch
+# from gp_step0_dcm2nii import func_sbatch
 
 
 # %%
@@ -345,7 +345,9 @@ def func_reml(work_dir, phase, sub_num, time_files):
                 -prefix {phase}_WMe_rall \
                 tmp_allRuns_{phase}_WMe+tlrc
         """
-        func_sbatch(h_cmd, 1, 4, 1, f"{sub_num}wts", work_dir)
+        # func_sbatch(h_cmd, 1, 4, 1, f"{sub_num}wts", work_dir)
+        h_wts = subprocess.Popen(h_cmd, shell=True, stdout=subprocess.PIPE)
+        h_wts.wait()
 
     # run REML for each phase of session
     if type(time_files) == list:
@@ -360,7 +362,9 @@ def func_reml(work_dir, phase, sub_num, time_files):
                     -dsort {phase}_WMe_rall+tlrc \
                     -GOFORIT
             """
-            func_sbatch(h_cmd, 25, 4, 6, f"{sub_num}rml", work_dir)
+            # func_sbatch(h_cmd, 25, 4, 6, f"{sub_num}rml", work_dir)
+            h_rml = subprocess.Popen(h_cmd, shell=True, stdout=subprocess.PIPE)
+            h_rml.wait()
 
     elif type(time_files) == dict:
         for desc in time_files:
@@ -374,15 +378,16 @@ def func_reml(work_dir, phase, sub_num, time_files):
                         -dsort {phase}_WMe_rall+tlrc \
                         -GOFORIT
                 """
-                func_sbatch(h_cmd, 25, 4, 6, f"{sub_num}rml", work_dir)
-
+                # func_sbatch(h_cmd, 25, 4, 6, f"{sub_num}rml", work_dir)
+                h_rml = subprocess.Popen(h_cmd, shell=True, stdout=subprocess.PIPE)
+                h_rml.wait()
 
 # %%
 # receive arguments
 def func_argparser():
     parser = ArgumentParser("Receive Bash args from wrapper")
     parser.add_argument("pars_subj", help="Subject ID")
-    parser.add_argument("pars_sess", help="Session")
+    # parser.add_argument("pars_sess", help="Session")
     parser.add_argument("pars_type", help="Decon Type")
     parser.add_argument("pars_dir", help="Derivatives Directory")
     return parser
@@ -393,13 +398,14 @@ def main():
     # capture passed args
     args = func_argparser().parse_args()
     subj = args.pars_subj
-    sess = args.pars_sess
+    # sess = args.pars_sess
     decon_type = args.pars_type
     deriv_dir = args.pars_dir
 
     # set up
     work_dir = os.path.join(deriv_dir, subj, sess)
     sub_num = subj.split("-")[1]
+    sess = os.listdir(os.path.join(par_dir, "dset", subj))[0]
 
     """ Get time dict """
     with open(os.path.join(work_dir, "decon_dict.json")) as json_file:

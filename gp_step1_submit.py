@@ -58,8 +58,8 @@ def main():
             run_list.append(subj)
 
     # make batch list
-    if len(run_list) > 10:
-        batch_list = run_list[0:10]
+    if len(run_list) > 20:
+        batch_list = run_list[0:20]
     else:
         batch_list = run_list
 
@@ -71,7 +71,7 @@ def main():
         sbatch_job = f"""
             sbatch \
                 -J "GP1{subj.split("-")[1]}" \
-                -t 10:00:00 \
+                -t 25:00:00 \
                 --mem=4000 \
                 --ntasks-per-node=6 \
                 -o {h_out} -e {h_err} \
