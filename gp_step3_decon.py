@@ -60,7 +60,7 @@ def func_write_decon(
     switch_dict = {
         "dmBLOCK": "'dmBLOCK(1)'",
         "GAM": "'GAM'",
-        "2GAM": "'TWOGAMpw(4,5,0.2,12,7)'",
+        "2GAM": "'TWOGAMpw(4,5,0.2,12,7,2.5)'",
     }
 
     reg_beh = []

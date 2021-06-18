@@ -20,11 +20,11 @@ import json
 # set up
 parent_dir = "/fslhome/amhedges/compute/Context"
 code_dir = os.path.join(parent_dir, "code/afni_python")
-# phase_list = ["study", "test"]
-decon_type = "dmBLOCK"
+#phase_list = ["study", "test"]
+decon_type = "2GAM"
 decon_dict = {
-    "study": ["tf_study_face.txt", "tf_study_num.txt", "tf_study_scene.txt"],
-    "test": ["tf_test_fix.txt", "tf_test_con.txt", "tf_test_fbl.txt"],
+    "study": ["tf_study_Con.txt", "tf_study_Incon.txt", "tf_study_ConCR.txt","tf_study_ConFA.txt","tf_study_ConHit.txt","tf_study_ConMiss.txt", "tf_study_InconCR.txt","tf_study_InconFA.txt","tf_study_InconHit.txt","tf_study_InconMiss.txt","tf_study_NA.txt"],
+    "test": ["tf_test_CR.txt", "tf_test_FA.txt","tf_test_Hit.txt", "tf_test_Miss.txt", "tf_test_ConCR.txt","tf_test_ConFA.txt","tf_test_ConHit.txt","tf_test_ConMiss.txt", "tf_test_InconCR.txt","tf_test_InconFA.txt","tf_test_InconHit.txt","tf_test_InconMiss.txt","tf_test_NA.txt","tf_test_NANA.txt"]
 }
 
 

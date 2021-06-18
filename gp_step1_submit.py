@@ -71,7 +71,7 @@ def main():
         sbatch_job = f"""
             sbatch \
                 -J "GP1{subj.split("-")[1]}" \
-                -t 25:00:00 \
+                -t 20:00:00 \
                 --mem=4000 \
                 --ntasks-per-node=6 \
                 -o {h_out} -e {h_err} \
