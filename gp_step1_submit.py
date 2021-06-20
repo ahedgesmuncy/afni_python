@@ -58,11 +58,11 @@ def main():
             run_list.append(subj)
 
     # make batch list
-    if len(run_list) > 20:
-        batch_list = run_list[0:20]
-    else:
-        batch_list = run_list
-
+    # if len(run_list) > 20:
+    #     batch_list = run_list[0:20]
+    # else:
+    #     batch_list = run_list
+    batch_list = run_list
     for subj in batch_list:
 
         h_out = os.path.join(out_dir, f"out_{subj}.txt")

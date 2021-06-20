@@ -20,11 +20,10 @@ import json
 # set up
 parent_dir = "/fslhome/amhedges/compute/Context"
 code_dir = os.path.join(parent_dir, "code/afni_python")
-#phase_list = ["study", "test"]
 decon_type = "2GAM"
 decon_dict = {
-    "study": ["tf_study_Con.txt", "tf_study_Incon.txt", "tf_study_ConCR.txt","tf_study_ConFA.txt","tf_study_ConHit.txt","tf_study_ConMiss.txt", "tf_study_InconCR.txt","tf_study_InconFA.txt","tf_study_InconHit.txt","tf_study_InconMiss.txt","tf_study_NA.txt"],
-    "test": ["tf_test_CR.txt", "tf_test_FA.txt","tf_test_Hit.txt", "tf_test_Miss.txt", "tf_test_ConCR.txt","tf_test_ConFA.txt","tf_test_ConHit.txt","tf_test_ConMiss.txt", "tf_test_InconCR.txt","tf_test_InconFA.txt","tf_test_InconHit.txt","tf_test_InconMiss.txt","tf_test_NA.txt","tf_test_NANA.txt"]
+    "study": ["tf_study_Con.txt", "tf_study_Incon.txt", "tf_study_ConCR.txt", "tf_study_ConFA.txt", "tf_study_ConHit.txt", "tf_study_ConMiss.txt", "tf_study_InconCR.txt", "tf_study_InconFA.txt", "tf_study_InconHit.txt", "tf_study_InconMiss.txt", "tf_study_NA.txt"],
+    "test": ["tf_test_CR.txt", "tf_test_FA.txt", "tf_test_Hit.txt", "tf_test_Miss.txt", "tf_test_ConCR.txt", "tf_test_ConFA.txt", "tf_test_ConHit.txt", "tf_test_ConMiss.txt", "tf_test_InconCR.txt", "tf_test_InconFA.txt", "tf_test_InconHit.txt", "tf_test_InconMiss.txt", "tf_test_NA.txt", "tf_test_NANA.txt"]
 }
 
 
@@ -73,8 +72,8 @@ def main():
     for subj in batch_list:
         sess = os.listdir(os.path.join(parent_dir, "dset", subj))[0]
 
-        h_out = os.path.join(out_dir, f"out_{subj}_{sess}.txt")
-        h_err = os.path.join(out_dir, f"err_{subj}_{sess}.txt")
+        h_out = os.path.join(out_dir, f"out_{subj}.txt")
+        h_err = os.path.join(out_dir, f"err_{subj}.txt")
 
         # write decon_dict to json in subj dir
         with open(
@@ -89,10 +88,9 @@ def main():
                 --mem=4000 \
                 --ntasks-per-node=6 \
                 -o {h_out} -e {h_err} \
-                --wrap="module load python-3.7.0-gcc-8.2.0-joh2xyk \n \
+                --wrap="module load python/3.8 \n \
                 python {code_dir}/gp_step3_decon.py \
                     {subj} \
-                    {sess} \
                     {decon_type} \
                     {deriv_dir}"
         """

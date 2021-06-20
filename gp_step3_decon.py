@@ -25,7 +25,6 @@ import subprocess
 import re
 import json
 from argparse import ArgumentParser
-# from gp_step0_dcm2nii import func_sbatch
 
 
 # %%
@@ -49,7 +48,6 @@ def func_write_decon(
 
     # determine tr
     h_cmd = f"""
-        module load afni-20.2.06
         3dinfo -tr {work_dir}/{run_list[0]}
     """
     h_tr = subprocess.Popen(h_cmd, shell=True, stdout=subprocess.PIPE)
@@ -69,7 +67,7 @@ def func_write_decon(
 
             # add stim_time info, order is
             #   -stim_times 1 tf_beh.txt basisFunction
-            reg_beh.append("-stim_times_AM1")
+            reg_beh.append("-stim_times")
             reg_beh.append(f"{c_beh + 1}")
             reg_beh.append(f"timing_files/{tf_dict[beh]}")
             reg_beh.append(switch_dict[decon_type])
@@ -162,7 +160,6 @@ def func_motion(work_dir, phase, sub_num):
     # build motion, censor files
     if not os.path.exists(os.path.join(work_dir, f"censor_{phase}_combined.1D")):
         h_cmd = f"""
-            module load afni-20.2.06
             cd {work_dir}
 
             cat dfile.run-*_{phase}.1D > dfile_rall_{phase}.1D
@@ -307,7 +304,6 @@ def func_decon(work_dir, phase, time_files, decon_type, sub_num):
     # run decon script to generate matrices
     for dcn_script in script_list:
         h_cmd = f"""
-            module load afni-20.2.06
             cd {work_dir}
             source {os.path.join(work_dir, dcn_script)}
         """
@@ -382,12 +378,12 @@ def func_reml(work_dir, phase, sub_num, time_files):
                 h_rml = subprocess.Popen(h_cmd, shell=True, stdout=subprocess.PIPE)
                 h_rml.wait()
 
+
 # %%
 # receive arguments
 def func_argparser():
     parser = ArgumentParser("Receive Bash args from wrapper")
     parser.add_argument("pars_subj", help="Subject ID")
-    # parser.add_argument("pars_sess", help="Session")
     parser.add_argument("pars_type", help="Decon Type")
     parser.add_argument("pars_dir", help="Derivatives Directory")
     return parser
@@ -398,14 +394,13 @@ def main():
     # capture passed args
     args = func_argparser().parse_args()
     subj = args.pars_subj
-    # sess = args.pars_sess
     decon_type = args.pars_type
     deriv_dir = args.pars_dir
 
     # set up
+    sess = os.listdir(os.path.join(deriv_dir, subj))[0]
     work_dir = os.path.join(deriv_dir, subj, sess)
     sub_num = subj.split("-")[1]
-    sess = os.listdir(os.path.join(par_dir, "dset", subj))[0]
 
     """ Get time dict """
     with open(os.path.join(work_dir, "decon_dict.json")) as json_file:
