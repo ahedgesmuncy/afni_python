@@ -22,8 +22,40 @@ parent_dir = "/fslhome/amhedges/compute/Context"
 code_dir = os.path.join(parent_dir, "code/afni_python")
 decon_type = "2GAM"
 decon_dict = {
-    "study": ["tf_study_Con.txt", "tf_study_Incon.txt", "tf_study_ConCR.txt", "tf_study_ConFA.txt", "tf_study_ConHit.txt", "tf_study_ConMiss.txt", "tf_study_InconCR.txt", "tf_study_InconFA.txt", "tf_study_InconHit.txt", "tf_study_InconMiss.txt", "tf_study_NA.txt"],
-    "test": ["tf_test_CR.txt", "tf_test_FA.txt", "tf_test_Hit.txt", "tf_test_Miss.txt", "tf_test_ConCR.txt", "tf_test_ConFA.txt", "tf_test_ConHit.txt", "tf_test_ConMiss.txt", "tf_test_InconCR.txt", "tf_test_InconFA.txt", "tf_test_InconHit.txt", "tf_test_InconMiss.txt", "tf_test_NA.txt", "tf_test_NANA.txt"]
+    "study": {
+        "Congruent": ["tf_study_Con.txt", "tf_study_Incon.txt", "tf_study_NA.txt"],
+        "ConBehavior": [
+            "tf_study_ConCR.txt",
+            "tf_study_ConFA.txt",
+            "tf_study_ConHit.txt",
+            "tf_study_ConMiss.txt",
+            "tf_study_InconCR.txt",
+            "tf_study_InconFA.txt",
+            "tf_study_InconHit.txt",
+            "tf_study_InconMiss.txt",
+            "tf_study_NA.txt",
+        ],
+    },
+    "test": {
+        "Behavior": [
+            "tf_test_CR.txt",
+            "tf_test_FA.txt",
+            "tf_test_Hit.txt",
+            "tf_test_Miss.txt",
+            "tf_test_NA.txt",
+        ],
+        "ConBehavior": [
+            "tf_test_ConCR.txt",
+            "tf_test_ConFA.txt",
+            "tf_test_ConHit.txt",
+            "tf_test_ConMiss.txt",
+            "tf_test_InconCR.txt",
+            "tf_test_InconFA.txt",
+            "tf_test_InconHit.txt",
+            "tf_test_InconMiss.txt",
+            "tf_test_NANA.txt",
+        ],
+    },
 }
 
 
@@ -62,9 +94,9 @@ def main():
         if not os.path.exists(check_file1) or not os.path.exists(check_file2):
             run_list.append(subj)
 
-    # make batch list
-    # if len(run_list) > 10:
-    #     batch_list = run_list[0:10]
+    # # make batch list
+    # if len(run_list) > 2:
+    #     batch_list = run_list[0:2]
     # else:
     #     batch_list = run_list
     batch_list = run_list
@@ -85,7 +117,7 @@ def main():
             sbatch \
                 -J "GP3{subj.split("-")[1]}" \
                 -t 50:00:00 \
-                --mem=4000 \
+                --mem=16000 \
                 --ntasks-per-node=6 \
                 -o {h_out} -e {h_err} \
                 --wrap="module load python/3.8 \n \
@@ -94,9 +126,7 @@ def main():
                     {decon_type} \
                     {deriv_dir}"
         """
-        sbatch_submit = subprocess.Popen(
-            sbatch_job, shell=True, stdout=subprocess.PIPE
-        )
+        sbatch_submit = subprocess.Popen(sbatch_job, shell=True, stdout=subprocess.PIPE)
         job_id = sbatch_submit.communicate()[0]
         print(job_id.decode("utf-8"))
         time.sleep(1)
