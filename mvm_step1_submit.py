@@ -7,7 +7,7 @@ import json
 
 # %%
 # set up
-parent_dir = "/fslhome/amhedges/compute/Context"
+parent_dir = "/fslhome/amhedges/compute/Context/code/afni_python"
 code_dir = os.path.join(parent_dir, "code")
 atlas_dir = "/fslhome/amhedges/Templates/vold2_mni"
 prior_dir = os.path.join(atlas_dir, "priors_ACT")
@@ -69,16 +69,14 @@ def main():
         json.dump(mvm_dict, outfile)
 
     sbatch_job = f"""
-        sbatch \
-            -J "PMVM" \
-            -t 40:00:00 \
-            --mem=4000 \
-            --ntasks-per-node=1 \
-            -p IB_44C_512G  \
+       sbatch \
+            -J "MVM" \
+            -t 50:00:00 \
+            --mem=6000 \
+            --ntasks-per-node=10 \
             -o {h_out} -e {h_err} \
-            --account iacc_madlab \
-            --qos pq_madlab \
-            --wrap="~/miniconda3/bin/python {code_dir}/mvm_step1_test.py \
+            --wrap="module load python/3.8 \n \
+                python {code_dir}/mvm_step1_test.py \
                 {group_dir} \
                 {atlas_dir} \
                 {prior_dir} \
@@ -87,7 +85,6 @@ def main():
     sbatch_submit = subprocess.Popen(sbatch_job, shell=True, stdout=subprocess.PIPE)
     job_id = sbatch_submit.communicate()[0]
     print(job_id.decode("utf-8"))
-    time.sleep(1)
 
 
 if __name__ == "__main__":
