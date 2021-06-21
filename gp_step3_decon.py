@@ -409,7 +409,7 @@ def main():
     """ Submit job for each phase """
     for phase in decon_dict:
 
-        """ Make motion files """
+        """Make motion files"""
         if not os.path.exists(os.path.join(work_dir, f"censor_{phase}_combined.1D")):
             func_motion(work_dir, phase, sub_num)
 
