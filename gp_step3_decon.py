@@ -402,16 +402,16 @@ def func_argparser():
 
 def main():
 
-    # For testing
-    subj = "sub-4681"
-    decon_type = "2GAM"
-    deriv_dir = "/fslhome/amhedges/compute/Context/derivatives"
+    # # For testing
+    # subj = "sub-4681"
+    # decon_type = "2GAM"
+    # deriv_dir = "/fslhome/amhedges/compute/Context/derivatives"
 
-    # # capture passed args
-    # args = func_argparser().parse_args()
-    # subj = args.pars_subj
-    # decon_type = args.pars_type
-    # deriv_dir = args.pars_dir
+    # capture passed args
+    args = func_argparser().parse_args()
+    subj = args.pars_subj
+    decon_type = args.pars_type
+    deriv_dir = args.pars_dir
 
     # set up
     sess = os.listdir(os.path.join(deriv_dir, subj))[0]
