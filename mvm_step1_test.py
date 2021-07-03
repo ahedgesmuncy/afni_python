@@ -174,7 +174,6 @@ def main():
 
     # get args
     args = func_argparser().parse_args()
-    subj_list = args.subj_list
     group_dir = args.group_dir
     atlas_dir = args.atlas_dir
     prior_dir = args.prior_dir
