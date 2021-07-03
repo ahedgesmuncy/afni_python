@@ -23,7 +23,7 @@ code_dir = os.path.join(parent_dir, "code/afni_python")
 decon_type = "2GAM"
 decon_dict = {
     "study": {
-        "Congruent": ["tf_study_Con.txt", "tf_study_Incon.txt", "tf_study_NA.txt"],
+        "Congruent": ["tf_study_Con.txt", "tf_study_Incon.txt", "tf_study_NA1.txt"],
         "ConBehavior": [
             "tf_study_ConCR.txt",
             "tf_study_ConFA.txt",
@@ -33,7 +33,7 @@ decon_dict = {
             "tf_study_InconFA.txt",
             "tf_study_InconHit.txt",
             "tf_study_InconMiss.txt",
-            "tf_study_NA.txt",
+            "tf_study_NA2.txt",
         ],
     },
     "test": {
@@ -42,7 +42,7 @@ decon_dict = {
             "tf_test_FA.txt",
             "tf_test_Hit.txt",
             "tf_test_Miss.txt",
-            "tf_test_NA.txt",
+            "tf_test_NA1.txt",
         ],
         "ConBehavior": [
             "tf_test_ConCR.txt",
@@ -53,7 +53,7 @@ decon_dict = {
             "tf_test_InconFA.txt",
             "tf_test_InconHit.txt",
             "tf_test_InconMiss.txt",
-            "tf_test_NANA.txt",
+            "tf_test_NA2.txt",
         ],
     },
 }

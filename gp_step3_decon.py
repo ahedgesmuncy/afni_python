@@ -24,6 +24,8 @@ import fnmatch
 import subprocess
 import re
 import json
+import pandas as pd
+import numpy as np
 from argparse import ArgumentParser
 
 
@@ -280,6 +282,15 @@ def func_decon(work_dir, phase, time_files, decon_type, sub_num):
                 beh = tf.split("_")[-1].split(".")[0]
                 tf_dict[beh] = tf
 
+            # patch - delete empty tf_NAs
+            for patch in ["NA1", "NA2"]:
+                if patch in tf_dict.keys():
+                    na_file = os.path.join(work_dir, "timing_files", tf_dict[patch])
+                    h_df = pd.read_csv(na_file, header=None)
+                    h_df = h_df.replace("*", np.nan)
+                    if h_df.isnull().sum().sum() == 3:
+                        tf_dict.pop(patch)
+
             decon_script = os.path.join(work_dir, f"decon_{phase}_{desc}.sh")
             with open(decon_script, "w") as script:
                 script.write(
@@ -391,11 +402,16 @@ def func_argparser():
 
 def main():
 
-    # capture passed args
-    args = func_argparser().parse_args()
-    subj = args.pars_subj
-    decon_type = args.pars_type
-    deriv_dir = args.pars_dir
+    # For testing
+    subj = "sub-4681"
+    decon_type = "2GAM"
+    deriv_dir = "/fslhome/amhedges/compute/Context/derivatives"
+
+    # # capture passed args
+    # args = func_argparser().parse_args()
+    # subj = args.pars_subj
+    # decon_type = args.pars_type
+    # deriv_dir = args.pars_dir
 
     # set up
     sess = os.listdir(os.path.join(deriv_dir, subj))[0]
