@@ -7,8 +7,8 @@ import json
 
 # %%
 # set up
-parent_dir = "/fslhome/amhedges/compute/Context/code/afni_python"
-code_dir = os.path.join(parent_dir, "code")
+parent_dir = "/fslhome/amhedges/compute/Context"
+code_dir = os.path.join(parent_dir, "code/afni_python")
 atlas_dir = "/fslhome/amhedges/Templates/vold2_mni"
 prior_dir = os.path.join(atlas_dir, "priors_ACT")
 

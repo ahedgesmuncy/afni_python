@@ -83,13 +83,13 @@ def main():
             deriv_dir,
             subj,
             sess,
-            f"{decon_list[0]}_single_stats_REML+tlrc.HEAD",
+            f"{decon_list[0]}_Congruent_stats_REML+tlrc.HEAD",
         )
         check_file2 = os.path.join(
             deriv_dir,
             subj,
             sess,
-            f"{decon_list[1]}_single_stats_REML+tlrc.HEAD",
+            f"{decon_list[1]}_ConBehavior_stats_REML+tlrc.HEAD",
         )
         if not os.path.exists(check_file1) or not os.path.exists(check_file2):
             run_list.append(subj)
@@ -99,8 +99,23 @@ def main():
     #     batch_list = run_list[0:2]
     # else:
     #     batch_list = run_list
-    batch_list = run_list
-
+    # batch_list = run_list
+    batch_list = [
+        "sub-5431",
+        "sub-5427",
+        "sub-5425",
+        "sub-5344",
+        "sub-5313",
+        "sub-5286",
+        "sub-5250",
+        "sub-5237",
+        "sub-5228",
+        "sub-5051",
+        "sub-5050",
+        "sub-5038",
+        "sub-4742",
+        "sub-4681",
+    ]
     for subj in batch_list:
         sess = os.listdir(os.path.join(parent_dir, "dset", subj))[0]
 
