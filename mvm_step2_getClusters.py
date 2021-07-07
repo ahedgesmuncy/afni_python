@@ -43,7 +43,7 @@ def func_getClusters(grp_dir, mvm_dict):
 def main():
 
     # TODO update for multiple MVMs
-    grp_dir = "/scratch/madlab/emu_power/analyses"
+    grp_dir = "~/compute/Context/analyses"
     mvm_dict = {"Hit-Miss": [2, 3], "CR-FA": [4, 5]}
     func_getClusters(grp_dir, mvm_dict)
 

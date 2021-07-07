@@ -431,12 +431,16 @@ def main():
 
         """ Generate decon matrices """
         time_files = decon_dict[phase]
-        decon_check = os.path.join(work_dir, f"X.{phase}_single.jpg")
+
+        # patch for type(decon_dict[phase]) == dict
+        check_str = list(decon_dict[phase].keys())[0]
+
+        decon_check = os.path.join(work_dir, f"X.{phase}_{check_str}.jpg")
         if not os.path.exists(decon_check):
             func_decon(work_dir, phase, time_files, decon_type, sub_num)
 
         """ Do Decon """
-        reml_check = os.path.join(work_dir, f"{phase}_single_stats_REML+tlrc.HEAD")
+        reml_check = os.path.join(work_dir, f"{phase}_{check_str}_stats_REML+tlrc.HEAD")
         if not os.path.exists(reml_check):
             func_reml(work_dir, phase, sub_num, time_files)
 

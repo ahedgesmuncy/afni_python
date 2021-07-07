@@ -97,6 +97,7 @@ def func_mvm(beh_dict, glt_dict, subj_list, phase, group_dir, deriv_dir):
         glt_list.append(f"'WSVARS: 1*{glt_dict[test][0]} -1*{glt_dict[test][1]}'")
 
     h_cmd = f"""
+        module load r/3.6
         cd {group_dir}
 
         3dMVM \
