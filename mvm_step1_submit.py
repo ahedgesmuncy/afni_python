@@ -39,9 +39,50 @@ mvm_dict = {
                 "IncFA-IncHT": ["InconFA", "InconHit"],
                 "ConCR-ConHT": ["ConCR", "ConHit"],
                 "IncCR-IncHT": ["InconCR", "InconHit"],
+                "ConCR-IncCR": ["ConCR", "InconCR"],
+                "ConCR-IncFA": ["ConFA", "InconFA"],
+                "ConHT-IncHT": ["ConHit", "InconHit"],
+                "ConMS-IncMS": ["ConMiss", "InconMiss"],
             },
         ],
-    }
+    },
+    "test": {
+        "Behavior": [
+            {"CR": 1, "FA": 3, "Hit": 5, "Miss": 7},
+            {
+                "CR-FA": ["CR", "FA"],
+                "CR-Hit": ["CR", "Hit"],
+                "CR-Miss": ["CR", "Miss"],
+                "FA-Hit": ["FA", "Hit"],
+                "FA-Miss": ["FA", "Miss"],
+                "Hit-Miss": ["Hit", "Miss"],
+            },
+        ],
+        "ConBehavior": [
+            {
+                "ConCR": 1,
+                "ConFA": 3,
+                "ConHit": 5,
+                "ConMiss": 7,
+                "InconCR": 9,
+                "InconFA": 11,
+                "InconHit": 13,
+                "InconMiss": 15,
+            },
+            {
+                "ConCR-ConFA": ["ConCR", "ConFA"],
+                "IncCR-IncFA": ["InconCR", "InconFA"],
+                "ConFA-ConHT": ["ConFA", "ConHit"],
+                "IncFA-IncHT": ["InconFA", "InconHit"],
+                "ConCR-ConHT": ["ConCR", "ConHit"],
+                "IncCR-IncHT": ["InconCR", "InconHit"],
+                "ConCR-IncCR": ["ConCR", "InconCR"],
+                "ConCR-IncFA": ["ConFA", "InconFA"],
+                "ConHT-IncHT": ["ConHit", "InconHit"],
+                "ConMS-IncMS": ["ConMiss", "InconMiss"],
+            },
+        ],
+    },
 }
 
 
