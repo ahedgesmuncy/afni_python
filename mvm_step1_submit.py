@@ -58,7 +58,7 @@ mvm_dict = {
                 "Hit-Miss": ["Hit", "Miss"],
             },
         ],
-        "ConBehavior": [
+        "ConBehaviorT": [
             {
                 "ConCR": 1,
                 "ConFA": 3,

@@ -74,7 +74,7 @@ def func_mask(subj_list, deriv_dir, phase, atlas_dir, prior_dir, group_dir):
         h_GMmask.wait()
 
 
-def func_mvm(beh_dict, glt_dict, subj_list, phase, group_dir, deriv_dir):
+def func_mvm(beh_dict, glt_dict, subj_list, phase, group_dir, deriv_dir, decon):
 
     data_table = []
     for beh in beh_dict:
@@ -86,7 +86,7 @@ def func_mvm(beh_dict, glt_dict, subj_list, phase, group_dir, deriv_dir):
                 deriv_dir,
                 subj,
                 sess,
-                f"""'{phase}_single_stats_REML+tlrc[{beh_dict[beh]}]'""",
+                f"""'{phase}_{decon}_stats_REML+tlrc[{beh_dict[beh]}]'""",
             )
             data_table.append(h_file)
 
@@ -188,7 +188,7 @@ def main():
     with open(os.path.join(group_dir, "mvm_dict.json")) as json_file:
         mvm_dict = json.load(json_file)
 
-    """ make group gray matter intreset mask """
+    """ make group gray matter intersect mask """
     if not os.path.exists(os.path.join(group_dir, "Group_GM_intersect_mask+tlrc.HEAD")):
         func_mask(
             subj_list,
@@ -206,11 +206,13 @@ def main():
             beh_dict = mvm_dict[phase][decon][0]
             glt_dict = mvm_dict[phase][decon][1]
             if not os.path.exists(os.path.join(group_dir, "MVM+tlrc.HEAD")):
-                func_mvm(beh_dict, glt_dict, subj_list, phase, group_dir, deriv_dir)
+                func_mvm(
+                    beh_dict, glt_dict, subj_list, phase, group_dir, deriv_dir, decon
+                )
 
             """ get subj acf estimates """
             # define, start file
-            acf_file = os.path.join(group_dir, f"ACF_{decon}.txt")
+            acf_file = os.path.join(group_dir, f"ACF_{phase}_{decon}.txt")
             if not os.path.exists(acf_file):
                 open(acf_file, "a").close()
 
@@ -225,7 +227,7 @@ def main():
                     func_acf(subj, subj_file, group_dir, acf_file)
 
             """ do clust simulations """
-            mc_file = os.path.join(group_dir, f"MC_{decon}_thresholds.txt")
+            mc_file = os.path.join(group_dir, f"MC_{phase}_{decon}_thresholds.txt")
             if not os.path.exists(mc_file):
                 open(mc_file, "a").close()
 
