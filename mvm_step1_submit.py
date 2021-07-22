@@ -1,6 +1,5 @@
 # %%
 import os
-import time
 from datetime import datetime
 import subprocess
 import json
@@ -58,7 +57,7 @@ mvm_dict = {
                 "Hit-Miss": ["Hit", "Miss"],
             },
         ],
-        "ConBehaviorT": [
+        "ConBehavior": [
             {
                 "ConCR": 1,
                 "ConFA": 3,
@@ -113,7 +112,7 @@ def main():
        sbatch \
             -J "MVM" \
             -t 50:00:00 \
-            --mem=6000 \
+            --mem=24000 \
             --ntasks-per-node=10 \
             -o {h_out} -e {h_err} \
             --wrap="module load python/3.8 \n \

@@ -6,8 +6,6 @@ import subprocess
 import pandas as pd
 from argparse import ArgumentParser
 
-# from gp_step0_dcm2nii import func_sbatch
-
 
 # %%
 def func_mask(subj_list, deriv_dir, phase, atlas_dir, prior_dir, group_dir):
@@ -76,6 +74,8 @@ def func_mask(subj_list, deriv_dir, phase, atlas_dir, prior_dir, group_dir):
 
 def func_mvm(beh_dict, glt_dict, subj_list, phase, group_dir, deriv_dir, decon):
 
+    # make dataTable input, format:
+    #   subj beh '/path/to/file[sub-brick]'
     data_table = []
     for beh in beh_dict:
         for subj in subj_list:
@@ -90,18 +90,22 @@ def func_mvm(beh_dict, glt_dict, subj_list, phase, group_dir, deriv_dir, decon):
             )
             data_table.append(h_file)
 
+    # make list of post-hoc comps, format:
+    #   -gltLabel X name -gltCode X 'WSVARS 1*A -1*B'
     glt_list = []
     for count, test in enumerate(glt_dict):
         glt_list.append(f"-gltLabel {count + 1} {test}")
         glt_list.append(f"-gltCode {count + 1}")
         glt_list.append(f"'WSVARS: 1*{glt_dict[test][0]} -1*{glt_dict[test][1]}'")
 
+    # write MVM command, print for review,
+    #   and run
     h_cmd = f"""
         module load r/3.6
         cd {group_dir}
 
         3dMVM \
-            -prefix MVM \
+            -prefix MVM_{phase}_{decon} \
             -jobs 10 \
             -mask Group_GM_intersect_mask+tlrc \
             -bsVars 1 \
@@ -112,7 +116,7 @@ def func_mvm(beh_dict, glt_dict, subj_list, phase, group_dir, deriv_dir, decon):
             Subj WSVARS InputFile \
             {" ".join(data_table)}
     """
-    # func_sbatch(h_cmd, 2, 6, 10, "cMVM", group_dir)
+    print(h_cmd)
     h_mvm = subprocess.Popen(h_cmd, shell=True, stdout=subprocess.PIPE)
     h_mvm.wait()
 
@@ -205,7 +209,9 @@ def main():
             """run MVM"""
             beh_dict = mvm_dict[phase][decon][0]
             glt_dict = mvm_dict[phase][decon][1]
-            if not os.path.exists(os.path.join(group_dir, "MVM+tlrc.HEAD")):
+            if not os.path.exists(
+                os.path.join(group_dir, f"MVM_{phase}_{decon}+tlrc.HEAD")
+            ):
                 func_mvm(
                     beh_dict, glt_dict, subj_list, phase, group_dir, deriv_dir, decon
                 )

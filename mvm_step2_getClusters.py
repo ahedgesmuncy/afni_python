@@ -5,36 +5,34 @@ import subprocess
 
 
 # %%
-def func_getClusters(grp_dir, mvm_dict):
+def func_getClusters(mvm_str, comp_thr, group_dir, mvm_dict):
 
-    # get K threshold from p < .001, NN=1, 2sided
+    # Determine cluster size (K)
     h_cmd = f"""
-        head -n 136 {grp_dir}/MC_thresholds.txt | \
+        head -n 136 {group_dir}/MC_thresholds.txt | \
             tail -n 1 | \
             awk '{{print $7}}'
     """
     h_thr = subprocess.Popen(h_cmd, shell=True, stdout=subprocess.PIPE)
-    thr_num = math.ceil(float(h_thr.communicate()[0].decode("utf-8")))
+    k_thr = math.ceil(float(h_thr.communicate()[0].decode("utf-8")))
 
-    # extract sig clusters
     for comp in mvm_dict:
         h_cmd = f"""
-            module load afni-20.2.06
-            cd {grp_dir}
+            cd {group_dir}
 
             3dClusterize \
                 -nosum \
                 -1Dformat \
-                -inset MVM+tlrc \
+                -inset MVM_{mvm_str}+tlrc \
                 -idat {mvm_dict[comp][0]} \
                 -ithr {mvm_dict[comp][1]} \
                 -NN 1 \
-                -clust_nvox {thr_num} \
-                -bisided -3.4372 3.4372 \
+                -clust_nvox {k_thr} \
+                -bisided -{comp_thr} {comp_thr} \
                 -pref_map Clust_{comp} \
                 > Table_{comp}.txt
         """
-        if not os.path.exists(os.path.join(grp_dir, f"Clust_{comp}+tlrc.HEAD")):
+        if not os.path.exists(os.path.join(group_dir, f"Clust_{comp}+tlrc.HEAD")):
             h_clust = subprocess.Popen(h_cmd, shell=True, stdout=subprocess.PIPE)
             h_clust.wait()
 
@@ -42,10 +40,13 @@ def func_getClusters(grp_dir, mvm_dict):
 # %%
 def main():
 
-    # TODO update for multiple MVMs
-    grp_dir = "~/compute/Context/analyses"
-    mvm_dict = {"Hit-Miss": [2, 3], "CR-FA": [4, 5]}
-    func_getClusters(grp_dir, mvm_dict)
+    group_dir = "/fslhome/amhedges/compute/Context/analyses"
+    # mvm_dict = {"Hit-Miss": [2, 3], "CR-FA": [4, 5]}
+    # thresh_dict = {14: 4.2208, 28: 3.6896, 42: 3.5442, 56: 3.4764, 70: 3.4372}
+    mvm_dict = {
+        "study": {"Congurent": {"A-B": [2, 3, 4.2208]}, "ConBehavior": ""},
+        "test": {"Behavior": "", "ConBehaviorT": ""},
+    }
 
 
 if __name__ == "__main__":
